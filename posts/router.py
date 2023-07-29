@@ -1,4 +1,4 @@
-from main import app
+from fastapi import APIRouter
 from posts.schemas import PostCreate, PostUpdate
 from posts.exceptions import PostNotFound
 
@@ -12,12 +12,14 @@ posts = {
 
 last_post_id = 0
 
-@app.get("/posts")
+router = APIRouter()
+
+@router.get("/")
 def get_all_posts():
     return list(posts.values())
 
 
-@app.post("/posts")
+@router.post("/")
 def create_post(post_data: PostCreate):
     global last_post_id
     new_id = last_post_id + 1
@@ -26,14 +28,14 @@ def create_post(post_data: PostCreate):
     return new_id
 
 
-@app.get("/post/{post_id}")
+@router.get("/{post_id}")
 def get_post(post_id: int):
     if post_id not in posts:
         raise PostNotFound()
     return posts[post_id]
 
 
-@app.put("/post/{post_id}")
+@router.put("/{post_id}")
 def update_post(post_id: int, post_data: PostUpdate):
     if post_id not in posts:
         raise PostNotFound()
@@ -44,7 +46,7 @@ def update_post(post_id: int, post_data: PostUpdate):
     return posts[post_id]
 
 
-@app.delete("/post/{post_id}")
+@router.delete("/{post_id}")
 def delete_post(post_id: int):
     if post_id not in posts:
         raise PostNotFound()
