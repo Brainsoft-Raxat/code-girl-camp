@@ -1,55 +1,54 @@
 from fastapi import APIRouter
 from posts.schemas import PostCreate, PostUpdate
 from posts.exceptions import PostNotFound
-
-posts = {
-    0: {
-        "title": "blah blah",
-        "content": "content",
-        "author": "haha"
-    }
-}
-
-last_post_id = 0
+from posts import service
 
 router = APIRouter()
 
+
 @router.get("/")
-def get_all_posts():
-    return list(posts.values())
+async def get_all_posts():
+    posts = await service.get_all_posts()
+
+    return posts
 
 
 @router.post("/")
-def create_post(post_data: PostCreate):
-    global last_post_id
-    new_id = last_post_id + 1
-    posts[new_id] = post_data.dict()
-    last_post_id = new_id
-    return new_id
+async def create_post(post_data: PostCreate):
+    post = await service.create_post(post_data)
+
+    return {"id": post.id}
 
 
 @router.get("/{post_id}")
-def get_post(post_id: int):
-    if post_id not in posts:
+async def get_post(post_id: int):
+    post = await service.get_post_by_id(post_id)
+
+    if not post:
         raise PostNotFound()
-    return posts[post_id]
+
+    return post
 
 
 @router.put("/{post_id}")
-def update_post(post_id: int, post_data: PostUpdate):
-    if post_id not in posts:
+async def update_post(post_id: int, post_data: PostUpdate):
+    post = await service.get_post_by_id(post_id)
+
+    if not post:
         raise PostNotFound()
 
-    post_dict = post_data.dict(exclude_unset=True)
-    posts[post_id].update(post_dict)
+    post = await service.update_post(post_id, post_data)
 
-    return posts[post_id]
+    return post
 
 
 @router.delete("/{post_id}")
-def delete_post(post_id: int):
-    if post_id not in posts:
+async def delete_post(post_id: int):
+    post = await service.get_post_by_id(post_id)
+
+    if not post:
         raise PostNotFound()
-    del posts[post_id]
+
+    await service.delete_post(post_id)
 
     return post_id
