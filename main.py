@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from posts.router import router as posts_router
-from users.router import router as users_router
+from auth.router import router as auth_router
 from database import database
 
 app = FastAPI()
@@ -16,4 +16,4 @@ async def shutdown():
     await database.disconnect()
 
 app.include_router(posts_router, prefix="/posts", tags=["Posts"])
-app.include_router(users_router, prefix="/users", tags=["Users"])
+app.include_router(auth_router, prefix="/auth", tags=["Auth"])

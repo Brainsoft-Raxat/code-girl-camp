@@ -24,8 +24,9 @@ users = Table(
     metadata,
     Column("id", Integer, Identity(), primary_key=True),
     Column("username", String, nullable=False, unique=True),
-    Column("first_name", String, nullable=False),
-    Column("last_name", String, nullable=False),
+    Column('password', String, nullable=False),
+    Column("name", String, nullable=False),
+    Column("surname", String, nullable=False),
     Column("avatar", String)
 )
 
