@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 
 
 class UserNotFound(HTTPException):
@@ -9,3 +9,15 @@ class UserNotFound(HTTPException):
 class UserExists(HTTPException):
     def __init__(self):
         super().__init__(status_code=400, detail="Username exists")
+
+
+class InvalidAuthCredentials(HTTPException):
+    def __init__(self):
+        super().__init__(status_code=status.HTTP_401_UNAUTHORIZED,
+                         detail="Invalid username or password")
+
+
+class InvalidSession(HTTPException):
+    def __init__(self):
+        super().__init__(status_code=status.HTTP_401_UNAUTHORIZED,
+                         detail="Invalid session")

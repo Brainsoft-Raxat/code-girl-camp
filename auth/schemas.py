@@ -15,3 +15,12 @@ class UserUpdate(BaseModel):
     name: str | None = None
     surname: str | None = None
     avatar: str
+
+
+class UserAuth(BaseModel):
+    username: str
+    password: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
